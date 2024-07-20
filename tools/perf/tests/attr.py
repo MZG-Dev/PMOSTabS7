@@ -1,6 +1,11 @@
 #! /usr/bin/python
 # SPDX-License-Identifier: GPL-2.0
 
+
+
+from builtins import filter
+from builtins import str
+from builtins import object
 import os
 import sys
 import glob
@@ -8,7 +13,7 @@ import optparse
 import tempfile
 import logging
 import shutil
-import ConfigParser
+import configparser
 
 def data_equal(a, b):
     # Allow multiple values in assignment separated by '|'
@@ -100,20 +105,20 @@ class Event(dict):
     def equal(self, other):
         for t in Event.terms:
             log.debug("      [%s] %s %s" % (t, self[t], other[t]));
-            if not self.has_key(t) or not other.has_key(t):
+            if t not in self or t not in other:
                 return False
             if not data_equal(self[t], other[t]):
                 return False
         return True
 
     def optional(self):
-        if self.has_key('optional') and self['optional'] == '1':
+        if 'optional' in self and self['optional'] == '1':
             return True
         return False
 
     def diff(self, other):
         for t in Event.terms:
-            if not self.has_key(t) or not other.has_key(t):
+            if t not in self or t not in other:
                 continue
             if not data_equal(self[t], other[t]):
                 log.warning("expected %s=%s, got %s" % (t, self[t], other[t]))
@@ -134,7 +139,7 @@ class Event(dict):
 #   - expected values assignments
 class Test(object):
     def __init__(self, path, options):
-        parser = ConfigParser.SafeConfigParser()
+        parser = configparser.SafeConfigParser()
         parser.read(path)
 
         log.warning("running '%s'" % path)
@@ -193,7 +198,7 @@ class Test(object):
         return True
 
     def load_events(self, path, events):
-        parser_event = ConfigParser.SafeConfigParser()
+        parser_event = configparser.SafeConfigParser()
         parser_event.read(path)
 
         # The event record section header contains 'event' word,
@@ -207,7 +212,7 @@ class Test(object):
             # Read parent event if there's any
             if (':' in section):
                 base = section[section.index(':') + 1:]
-                parser_base = ConfigParser.SafeConfigParser()
+                parser_base = configparser.SafeConfigParser()
                 parser_base.read(self.test_dir + '/' + base)
                 base_items = parser_base.items('event')
 
@@ -236,11 +241,11 @@ class Test(object):
 
         # For each expected event find all matching
         # events in result. Fail if there's not any.
-        for exp_name, exp_event in expect.items():
+        for exp_name, exp_event in list(expect.items()):
             exp_list = []
             res_event = {}
             log.debug("    matching [%s]" % exp_name)
-            for res_name, res_event in result.items():
+            for res_name, res_event in list(result.items()):
                 log.debug("      to [%s]" % res_name)
                 if (exp_event.equal(res_event)):
                     exp_list.append(res_name)
@@ -265,7 +270,7 @@ class Test(object):
 
         # For each defined group in the expected events
         # check we match the same group in the result.
-        for exp_name, exp_event in expect.items():
+        for exp_name, exp_event in list(expect.items()):
             group = exp_event.group
 
             if (group == ''):
@@ -282,12 +287,12 @@ class Test(object):
         log.debug("  matched")
 
     def resolve_groups(self, events):
-        for name, event in events.items():
+        for name, event in list(events.items()):
             group_fd = event['group_fd'];
             if group_fd == '-1':
                 continue;
 
-            for iname, ievent in events.items():
+            for iname, ievent in list(events.items()):
                 if (ievent['fd'] == group_fd):
                     event.group = iname
                     log.debug('[%s] has group leader [%s]' % (name, iname))
@@ -322,9 +327,9 @@ def run_tests(options):
     for f in glob.glob(options.test_dir + '/' + options.test):
         try:
             Test(f, options).run()
-        except Unsup, obj:
+        except Unsup as obj:
             log.warning("unsupp  %s" % obj.getMsg())
-        except Notest, obj:
+        except Notest as obj:
             log.warning("skipped %s" % obj.getMsg())
 
 def setup_log(verbose):
@@ -373,7 +378,7 @@ def main():
     setup_log(options.verbose)
 
     if not options.test_dir:
-        print 'FAILED no -d option specified'
+        print('FAILED no -d option specified')
         sys.exit(-1)
 
     if not options.test:
@@ -382,8 +387,8 @@ def main():
     try:
         run_tests(options)
 
-    except Fail, obj:
-        print "FAILED %s" % obj.getMsg();
+    except Fail as obj:
+        print(("FAILED %s" % obj.getMsg()));
         sys.exit(-1)
 
     sys.exit(0)

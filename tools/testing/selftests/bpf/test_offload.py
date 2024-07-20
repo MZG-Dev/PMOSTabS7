@@ -13,6 +13,11 @@
 # OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME
 # THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 
+
+
+from builtins import str
+from builtins import range
+from builtins import object
 from datetime import datetime
 import argparse
 import json
@@ -70,14 +75,14 @@ def log(header, data, level=None):
 def skip(cond, msg):
     if not cond:
         return
-    print("SKIP: " + msg)
+    print(("SKIP: " + msg))
     log("SKIP: " + msg, "", level=1)
     os.sys.exit(0)
 
 def fail(cond, msg):
     if not cond:
         return
-    print("FAIL: " + msg)
+    print(("FAIL: " + msg))
     log("FAIL: " + msg, "", level=1)
     os.sys.exit(1)
 
@@ -252,7 +257,7 @@ def int2str(fmt, val):
     ret = []
     for b in struct.pack(fmt, val):
         ret.append(int(b))
-    return " ".join(map(lambda x: str(x), ret))
+    return " ".join([str(x) for x in ret])
 
 def str2int(strtab):
     inttab = []
@@ -268,7 +273,7 @@ def str2int(strtab):
                         (len(strtab)))
     return struct.unpack(fmt, ba)[0]
 
-class DebugfsDir:
+class DebugfsDir(object):
     """
     Class for accessing DebugFS directories as a dictionary.
     """
@@ -278,7 +283,7 @@ class DebugfsDir:
         self._dict = self._debugfs_dir_read(path)
 
     def __len__(self):
-        return len(self._dict.keys())
+        return len(list(self._dict.keys()))
 
     def __getitem__(self, key):
         if type(key) is int:
@@ -318,7 +323,7 @@ class DebugfsDir:
 
         return dfs
 
-class NetdevSim:
+class NetdevSim(object):
     """
     Class for netdevsim netdevice and its attributes.
     """
@@ -345,7 +350,7 @@ class NetdevSim:
         _, new  = ip("link show")
 
         for dev in new:
-            f = filter(lambda x: x["ifname"] == dev["ifname"], old)
+            f = [x for x in old if x["ifname"] == dev["ifname"]]
             if len(list(f)) == 0:
                 return dev
 
@@ -550,22 +555,22 @@ def check_dev_info(other_ns, ns, prog_file=None, map_file=None, removed=False):
     progs = bpftool_prog_list(expected=1, ns=ns)
     prog = progs[0]
 
-    fail("dev" not in prog.keys(), "Device parameters not reported")
+    fail("dev" not in list(prog.keys()), "Device parameters not reported")
     dev = prog["dev"]
-    fail("ifindex" not in dev.keys(), "Device parameters not reported")
-    fail("ns_dev" not in dev.keys(), "Device parameters not reported")
-    fail("ns_inode" not in dev.keys(), "Device parameters not reported")
+    fail("ifindex" not in list(dev.keys()), "Device parameters not reported")
+    fail("ns_dev" not in list(dev.keys()), "Device parameters not reported")
+    fail("ns_inode" not in list(dev.keys()), "Device parameters not reported")
 
     if not other_ns:
-        fail("ifname" not in dev.keys(), "Ifname not reported")
+        fail("ifname" not in list(dev.keys()), "Ifname not reported")
         fail(dev["ifname"] != sim["ifname"],
              "Ifname incorrect %s vs %s" % (dev["ifname"], sim["ifname"]))
     else:
-        fail("ifname" in dev.keys(), "Ifname is reported for other ns")
+        fail("ifname" in list(dev.keys()), "Ifname is reported for other ns")
 
     maps = bpftool_map_list(expected=2, ns=ns)
     for m in maps:
-        fail("dev" not in m.keys(), "Device parameters not reported")
+        fail("dev" not in list(m.keys()), "Device parameters not reported")
         fail(dev != m["dev"], "Map's device different than program's")
 
 def check_extack(output, reference, args):
@@ -835,7 +840,7 @@ try:
     progs = bpftool_prog_list(expected=1)
     fail(ipl["xdp"]["prog"]["id"] != progs[0]["id"],
          "Loaded program has wrong ID")
-    fail("dev" in progs[0].keys(),
+    fail("dev" in list(progs[0].keys()),
          "Device parameters reported for non-offloaded program")
 
     start_test("Test XDP prog replace with bad flags...")
@@ -1279,7 +1284,7 @@ try:
     fail(out["error"] != "can't get prog info: No such device",
          "wrong error for get info on orphaned")
 
-    print("%s: OK" % (os.path.basename(__file__)))
+    print(("%s: OK" % (os.path.basename(__file__))))
 
 finally:
     log("Clean up...", "", level=1)

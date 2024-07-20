@@ -1,3 +1,4 @@
+
 #
 # gdb helper commands and functions for Linux kernel debugging
 #
@@ -11,6 +12,8 @@
 # This work is licensed under the terms of the GNU GPL version 2.
 #
 
+from builtins import str
+from past.utils import old_div
 import gdb
 
 from linux import tasks, utils
@@ -74,7 +77,7 @@ def cpu_list(mask_name):
             if hasattr(gdb.events, 'new_objfile'):
                 gdb.events.new_objfile.connect(cpu_mask_invalidate)
     bits_per_entry = mask[0].type.sizeof * 8
-    num_entries = mask.type.sizeof * 8 / bits_per_entry
+    num_entries = old_div(mask.type.sizeof * 8, bits_per_entry)
     entry = -1
     bits = 0
 

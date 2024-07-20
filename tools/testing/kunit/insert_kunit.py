@@ -12,6 +12,9 @@ mydir$ tree
     └── my_driver_test.c
 '''
 
+
+
+from builtins import object
 __author__ = 'Ji-Hun Kim'
 __version__ = '0.1.0'
 __maintainer__ = 'Ji-Hun Kim'
@@ -25,7 +28,7 @@ from kunit_new_template import create_skeletons, Skeletons
 
 TEST_PATH='kunit_test'
 
-class ConfigNameExtractor():
+class ConfigNameExtractor(object):
     def __init__(self, path):
         dir_name, file_name = os.path.split(path)
         mkfile = os.path.join(dir_name, 'Makefile')
@@ -36,7 +39,7 @@ class ConfigNameExtractor():
 
     def __search_file(self, string, target_file):
         if not os.path.exists(target_file):
-            print('The file is not exist: %s' %target_file)
+            print(('The file is not exist: %s' %target_file))
             sys.exit(1)
         with open(target_file, 'rt') as fp:
             for line in fp:
@@ -54,7 +57,7 @@ class ConfigNameExtractor():
         if srch:
             self.result = srch.group(1)
 
-class TemplateGenerator():
+class TemplateGenerator(object):
     def __init__(self, path, postfix='-test'):
         self.__create_path(path, postfix)
 
@@ -79,7 +82,7 @@ class TemplateGenerator():
     def get_testfile(self):
         return self.skeletons.test_skeleton
 
-class TestConstructor():
+class TestConstructor(object):
     '''
     modify path/Makefile
     modify path/Kconfig
@@ -121,11 +124,11 @@ class TestConstructor():
 
     def __cat_file(self, f):
         with open(f, 'r') as fp:
-            print(fp.read())
+            print((fp.read()))
 
     def __append_content(self, content, target, debug=False):
         if not os.path.exists(target):
-            print('not exist: %s' %target)
+            print(('not exist: %s' %target))
             sys.exit(1)
         if self.__is_contain(content, target):
             return
@@ -134,7 +137,7 @@ class TestConstructor():
             #if not self.__search_str(content, target):
             fp.write(content)
         if debug:
-            print('appended: %s' %target)
+            print(('appended: %s' %target))
             self.__cat_file(target)
 
     def __write_content(self, content, target, debug=False):
@@ -148,7 +151,7 @@ class TestConstructor():
                 fp.write(content)
 
         if debug:
-            print('generated: %s' %target)
+            print(('generated: %s' %target))
             self.__cat_file(target)
 
     def append_makefile(self):
@@ -201,7 +204,7 @@ def main():
     a.write_test_makefile()
     a.write_test_driver()
     result = os.path.join(os.path.split(arg.file_path)[0], TEST_PATH, a.test_driver_name + '.c')
-    print('Done! You can write test cases on the %s' %result)
+    print(('Done! You can write test cases on the %s' %result))
 
 if __name__ == '__main__':
     main()

@@ -27,6 +27,7 @@
 # Please make sure this works on both python2 and python3.
 #
 
+from builtins import str
 import codecs
 import os
 import subprocess

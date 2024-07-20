@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # Code for validating instrumention (i.e. for detecting bugs in instrument.py).
+from builtins import map
+from builtins import range
 import re
 import multiprocessing
 import textwrap
@@ -111,7 +113,7 @@ def validate_instrumentation(objdump_uninstr, skip, skip_stp, skip_asm, skip_sav
         to_int = lambda x: int(x, 16)
         bin_errors = []
         for line in f:
-            byte_offset, byte1, byte2 = map(to_int, re.split(r'\s+', line))
+            byte_offset, byte1, byte2 = list(map(to_int, re.split(r'\s+', line)))
             byte_offset -= 1
             section = instrument.offset_to_section(byte_offset, objdump_uninstr.sections['sections'])
             if section is None:
@@ -446,8 +448,8 @@ if common.run_from_ipython():
             first_4bits = int(addr[0], 16)
             first_byte_of_key = (0xf ^ first_4bits) << 4 | (0xf ^ first_4bits)
             key = 0
-            for i in xrange(0, 8):
+            for i in range(0, 8):
                 key |= first_byte_of_key << i*8
             return {'decaddr':'0x' + instrument._hex(instrument._int(addr) ^ key),
                     'key':'0x' + instrument._hex(key)}
-        return map(__d, addrs)
+        return list(map(__d, addrs))

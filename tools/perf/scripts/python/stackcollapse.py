@@ -1,3 +1,5 @@
+
+
 # stackcollapse.py - format perf samples with one line per distinct call stack
 # SPDX-License-Identifier: GPL-2.0
 #
@@ -19,6 +21,7 @@
 # Written by Paolo Bonzini <pbonzini@redhat.com>
 # Based on Brendan Gregg's stackcollapse-perf.pl script.
 
+from builtins import str
 import os
 import sys
 from collections import defaultdict
@@ -120,7 +123,7 @@ def process_event(param_dict):
     lines[stack_string] = lines[stack_string] + 1
 
 def trace_end():
-    list = lines.keys()
+    list = list(lines.keys())
     list.sort()
     for stack in list:
-        print "%s %d" % (stack, lines[stack])
+        print(("%s %d" % (stack, lines[stack])))

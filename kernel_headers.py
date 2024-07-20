@@ -14,9 +14,11 @@
 
 """Generates gen_headers_<arch>.bp or generates/checks kernel headers."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+
+
+
+
+
 
 import argparse
 import filecmp
@@ -50,28 +52,28 @@ def gen_version_h(verbose, gen_dir, version_makefile):
   sublevel_str = None
 
   if verbose:
-    print('gen_version_h: processing [%s]' % version_makefile)
+    print(('gen_version_h: processing [%s]' % version_makefile))
 
   with open(version_makefile, 'r') as f:
     while not version_str or not patchlevel_str or not sublevel_str:
       line = f.readline()
 
       if not line:
-        print(
+        print((
             'error: gen_version_h: failed to parse kernel version from %s' %
-            version_makefile)
+            version_makefile))
         return False
 
       line = line.rstrip()
 
       if verbose:
-        print('gen_version_h: line is %s' % line)
+        print(('gen_version_h: line is %s' % line))
 
       if not version_str:
         match = version_re.match(line)
         if match:
           if verbose:
-            print('gen_version_h: matched version [%s]' % line)
+            print(('gen_version_h: matched version [%s]' % line))
           version_str = match.group(1)
           continue
 
@@ -79,7 +81,7 @@ def gen_version_h(verbose, gen_dir, version_makefile):
         match = patchlevel_re.match(line)
         if match:
           if verbose:
-            print('gen_version_h: matched patchlevel [%s]' % line)
+            print(('gen_version_h: matched patchlevel [%s]' % line))
           patchlevel_str = match.group(1)
           continue
 
@@ -87,7 +89,7 @@ def gen_version_h(verbose, gen_dir, version_makefile):
         match = sublevel_re.match(line)
         if match:
           if verbose:
-            print('gen_version_h: matched sublevel [%s]' % line)
+            print(('gen_version_h: matched sublevel [%s]' % line))
           sublevel_str = match.group(1)
           continue
 
@@ -96,9 +98,9 @@ def gen_version_h(verbose, gen_dir, version_makefile):
   sublevel = int(sublevel_str)
 
   if verbose:
-    print(
+    print((
         'gen_version_h: found kernel version %d.%d.%d' %
-        (version, patchlevel, sublevel))
+        (version, patchlevel, sublevel)))
 
   version_h = os.path.join(gen_dir, 'linux', 'version.h')
 
@@ -141,7 +143,7 @@ def scan_arch_kbuild(verbose, arch_asm_kbuild, asm_generic_kbuild, arch_include_
   # This loop parses arch_asm_kbuild for various kinds of headers to generate.
 
   if verbose:
-    print('scan_arch_kbuild: processing [%s]' % arch_asm_kbuild)
+    print(('scan_arch_kbuild: processing [%s]' % arch_asm_kbuild))
 
   generated_list = []
   generic_list = []
@@ -160,13 +162,13 @@ def scan_arch_kbuild(verbose, arch_asm_kbuild, asm_generic_kbuild, arch_include_
       line = line.rstrip()
 
       if verbose:
-        print('scan_arch_kbuild: line is %s' % line)
+        print(('scan_arch_kbuild: line is %s' % line))
 
       match = generated_y_re.match(line)
 
       if match:
         if verbose:
-          print('scan_arch_kbuild: matched [%s]' % line)
+          print(('scan_arch_kbuild: matched [%s]' % line))
         generated_list.append(match.group(1))
         continue
 
@@ -174,14 +176,14 @@ def scan_arch_kbuild(verbose, arch_asm_kbuild, asm_generic_kbuild, arch_include_
 
       if match:
         if verbose:
-          print('scan_arch_kbuild: matched [%s]' % line)
+          print(('scan_arch_kbuild: matched [%s]' % line))
         generic_list.append(match.group(1))
         continue
 
   # This loop parses asm_generic_kbuild for various kinds of headers to generate.
 
   if verbose:
-    print('scan_arch_kbuild: processing [%s]' % asm_generic_kbuild)
+    print(('scan_arch_kbuild: processing [%s]' % asm_generic_kbuild))
 
   with open(asm_generic_kbuild, 'r') as f:
     while True:
@@ -193,13 +195,13 @@ def scan_arch_kbuild(verbose, arch_asm_kbuild, asm_generic_kbuild, arch_include_
       line = line.rstrip()
 
       if verbose:
-        print('scan_arch_kbuild: line is %s' % line)
+        print(('scan_arch_kbuild: line is %s' % line))
 
       match = mandatory_y_re.match(line)
 
       if match:
         if verbose:
-          print('scan_arch_kbuild: matched [%s]' % line)
+          print(('scan_arch_kbuild: matched [%s]' % line))
         mandatory_pre_list.append(match.group(1))
         continue
 
@@ -281,15 +283,15 @@ def gen_arch_headers(
       ]
 
       if verbose:
-        print('gen_arch_headers: cmd is %s' % cmd)
+        print(('gen_arch_headers: cmd is %s' % cmd))
 
       result = subprocess.call(cmd)
 
       if result != 0:
-        print('error: gen_arch_headers: cmd %s failed %d' % (cmd, result))
+        print(('error: gen_arch_headers: cmd %s failed %d' % (cmd, result)))
         error_count += 1
     else:
-      print('error: gen_arch_headers: syscall header has bad filename: %s' % generated)
+      print(('error: gen_arch_headers: syscall header has bad filename: %s' % generated))
       error_count += 1
 
   # Now we're at the second loop, which generates wrappers from arch-specific
@@ -332,7 +334,7 @@ def run_headers_install(verbose, gen_dir, headers_install, prefix, h):
   """
 
   if not h.startswith(prefix):
-    print('error: expected prefix [%s] on header [%s]' % (prefix, h))
+    print(('error: expected prefix [%s] on header [%s]' % (prefix, h)))
     return False
 
   out_h = os.path.join(gen_dir, h[len(prefix):])
@@ -342,12 +344,12 @@ def run_headers_install(verbose, gen_dir, headers_install, prefix, h):
   cmd = [headers_install, out_h_dirname, h_dirname, out_h_basename]
 
   if verbose:
-    print('run_headers_install: cmd is %s' % cmd)
+    print(('run_headers_install: cmd is %s' % cmd))
 
   result = subprocess.call(cmd)
 
   if result != 0:
-    print('error: run_headers_install: cmd %s failed %d' % (cmd, result))
+    print(('error: run_headers_install: cmd %s failed %d' % (cmd, result)))
     return False
 
   return True
@@ -441,27 +443,27 @@ def find_out(verbose, module_dir, prefix, rel_glob, excludes, outs):
   prefix_sep = prefix + os.sep
 
   if verbose:
-    print('find_out: module_dir_sep [%s]' % module_dir_sep)
-    print('find_out: prefix_sep [%s]' % prefix_sep)
+    print(('find_out: module_dir_sep [%s]' % module_dir_sep))
+    print(('find_out: prefix_sep [%s]' % prefix_sep))
 
   error_count = 0
 
   for full_src in full_srcs:
     if verbose:
-      print('find_out: full_src [%s]' % full_src)
+      print(('find_out: full_src [%s]' % full_src))
 
     if not full_src.startswith(module_dir_sep):
-      print('error: expected %s to start with %s' % (full_src, module_dir_sep))
+      print(('error: expected %s to start with %s' % (full_src, module_dir_sep)))
       error_count += 1
       continue
 
     local_src = full_src[len(module_dir_sep):]
 
     if verbose:
-      print('find_out: local_src [%s]' % local_src)
+      print(('find_out: local_src [%s]' % local_src))
 
     if not local_src.startswith(prefix_sep):
-      print('error: expected %s to start with %s' % (local_src, prefix_sep))
+      print(('error: expected %s to start with %s' % (local_src, prefix_sep)))
       error_count += 1
       continue
 
@@ -472,7 +474,7 @@ def find_out(verbose, module_dir, prefix, rel_glob, excludes, outs):
     local_out = local_src[len(prefix_sep):]
 
     if verbose:
-      print('find_out: local_out [%s]' % local_out)
+      print(('find_out: local_out [%s]' % local_out))
 
     outs.append(local_out)
 
@@ -555,7 +557,7 @@ def gen_blueprints(
   # Generate the blueprints file.
 
   if verbose:
-    print('gen_blueprints: generating %s' % new_gen_headers_bp)
+    print(('gen_blueprints: generating %s' % new_gen_headers_bp))
 
   with open(new_gen_headers_bp, 'w') as f:
     f.write('// ***** DO NOT EDIT *****\n')
@@ -732,14 +734,14 @@ def headers_diff(old_file, new_file):
     diff_detected = True
     print("Headers to remove:")
     for x in diff:
-      print("\t{}".format(x))
+      print(("\t{}".format(x)))
 
   diff = new_headers - old_headers
   if len(diff):
     diff_detected = True
     print("Headers to add:")
     for x in diff:
-      print("\t{}".format(x))
+      print(("\t{}".format(x)))
 
   return diff_detected
 
@@ -776,7 +778,7 @@ def gen_headers(
 
   if headers_diff(old_gen_headers_bp, new_gen_headers_bp):
     print('error: gen_headers blueprints file is out of date, suggested fix:')
-    print('#######Please add or remove the above mentioned headers from %s' % (old_gen_headers_bp))
+    print(('#######Please add or remove the above mentioned headers from %s' % (old_gen_headers_bp)))
     print('then re-run the build')
     return 1
 
@@ -944,11 +946,11 @@ def main():
   args = parser.parse_args()
 
   if args.verbose:
-    print('mode [%s]' % args.mode)
-    print('header_arch [%s]' % args.header_arch)
-    print('gen_dir [%s]' % args.gen_dir)
-    print('arch_asm_kbuild [%s]' % args.arch_asm_kbuild)
-    print('asm_generic_kbuild [%s]' % args.asm_generic_kbuild)
+    print(('mode [%s]' % args.mode))
+    print(('header_arch [%s]' % args.header_arch))
+    print(('gen_dir [%s]' % args.gen_dir))
+    print(('arch_asm_kbuild [%s]' % args.arch_asm_kbuild))
+    print(('asm_generic_kbuild [%s]' % args.asm_generic_kbuild))
 
   # Extract the module_dir from args.arch_asm_kbuild and rel_arch_asm_kbuild.
 
@@ -958,7 +960,7 @@ def main():
   suffix = os.sep + rel_arch_asm_kbuild
 
   if not args.arch_asm_kbuild.endswith(suffix):
-    print('error: expected %s to end with %s' % (args.arch_asm_kbuild, suffix))
+    print(('error: expected %s to end with %s' % (args.arch_asm_kbuild, suffix)))
     return 1
 
   module_dir = args.arch_asm_kbuild[:-len(suffix)]
@@ -967,7 +969,7 @@ def main():
 
 
   if args.verbose:
-    print('module_dir [%s]' % module_dir)
+    print(('module_dir [%s]' % module_dir))
 
 
   if args.mode == 'blueprints':
@@ -977,12 +979,12 @@ def main():
 
   if args.mode == 'headers':
     if args.verbose:
-      print('old_gen_headers_bp [%s]' % args.old_gen_headers_bp)
-      print('new_gen_headers_bp [%s]' % args.new_gen_headers_bp)
-      print('version_makefile [%s]' % args.version_makefile)
-      print('arch_syscall_tool [%s]' % args.arch_syscall_tool)
-      print('arch_syscall_tbl [%s]' % args.arch_syscall_tbl)
-      print('headers_install [%s]' % args.headers_install)
+      print(('old_gen_headers_bp [%s]' % args.old_gen_headers_bp))
+      print(('new_gen_headers_bp [%s]' % args.new_gen_headers_bp))
+      print(('version_makefile [%s]' % args.version_makefile))
+      print(('arch_syscall_tool [%s]' % args.arch_syscall_tool))
+      print(('arch_syscall_tbl [%s]' % args.arch_syscall_tbl))
+      print(('headers_install [%s]' % args.headers_install))
 
     return gen_headers(
         args.verbose, args.header_arch, args.gen_dir, args.arch_asm_kbuild,
@@ -990,7 +992,7 @@ def main():
         args.version_makefile, args.arch_syscall_tool, args.arch_syscall_tbl,
         args.headers_install, args.include_uapi, args.arch_include_uapi, args.techpack_include_uapi)
 
-  print('error: unknown mode: %s' % args.mode)
+  print(('error: unknown mode: %s' % args.mode))
   return 1
 
 

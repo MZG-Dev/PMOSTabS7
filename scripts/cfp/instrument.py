@@ -14,6 +14,15 @@
 # 2) a kernel built using gcc command-line options to prevent allocation of registers x16, and x17
 #
 
+
+
+
+from builtins import hex
+from builtins import next
+from builtins import chr
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import argparse
 import subprocess
 import common
@@ -152,7 +161,7 @@ def skip_func(func, skip, skip_asm):
            func in skip
 
 def parse_last_insn(objdump, i, n):
-    return [objdump.parse_insn(j) if objdump.is_insn(j) else None for j in xrange(i-n, i)]
+    return [objdump.parse_insn(j) if objdump.is_insn(j) else None for j in range(i-n, i)]
 
 def instrument(objdump, func=None, skip=set([]), skip_stp=set([]), skip_asm=set([]), skip_blr=set([]), keep_magic=set([]), threads=1):
     """
@@ -184,7 +193,7 @@ def instrument(objdump, func=None, skip=set([]), skip_stp=set([]), skip_asm=set(
     def __instrument(func=None, start_func=None, end_func=None, start_i=None, end_i=None,
             tid=None):
         def parse_insn_range(i, r):
-            return [objdump.parse_insn(j) if objdump.is_insn(j) else None for j in xrange(i, r)]
+            return [objdump.parse_insn(j) if objdump.is_insn(j) else None for j in range(i, r)]
 
         #
         # Instrumentation of function prologues.
@@ -370,7 +379,7 @@ class Objdump(object):
         # NOTE: DON'T MOVE THIS.
         # We are adding to the objdump output symbols from the data section.
         symbols = parse_nm(self.vmlinux)
-        for s in symbols.keys():
+        for s in list(symbols.keys()):
             sym = symbols[s]
             if sym[NE_TYPE] in ['t', 'T']:
                 self.func_addrs.add(_int(sym[NE_ADDR]))
@@ -582,7 +591,7 @@ class Objdump(object):
         if len(i_set) != 1 and i is None:
             raise RuntimeError("{func} occurs multiple times in vmlinux, specify which line from objdump you want ({i_set})".format(**locals()))
         elif i is None:
-            i = iter(i_set).next()
+            i = next(iter(i_set))
         else:
             assert i in i_set
         return i
@@ -774,7 +783,7 @@ class Objdump(object):
         [ ("func_1", 0), ("func_2", 1), ... ]
         """
         def __funcs():
-            for func, i_set in self.func_idx.iteritems():
+            for func, i_set in list(self.func_idx.items()):
                 for i in i_set:
                     yield func, i
         funcs = list(__funcs())
@@ -792,7 +801,7 @@ class Objdump(object):
         def idx(i):
             return self._funcs[i][1]
         while lo <= hi:
-            mi = (hi + lo)/2
+            mi = old_div((hi + lo),2)
             if i < idx(mi):
                 hi = mi-1
             elif i > idx(mi):
@@ -880,7 +889,7 @@ class Objdump(object):
                 return self.line(i) if raw_line else self.parse_insn(i)
             return to_yield
 
-        for i in xrange(i, min(end, len(self.lines) - 1) + 1):
+        for i in range(i, min(end, len(self.lines) - 1) + 1):
 
             to_yield = None
 
@@ -917,7 +926,7 @@ class Objdump(object):
         i = 0
         funcs = self.funcs()
         chunk = int(math.ceil(len(funcs)/float(threads)))
-        for n in xrange(threads):
+        for n in range(threads):
             start_func_idx = i
             end_func_idx = min(i+chunk-1, len(funcs)-1)
             start_i = funcs[start_func_idx][1]
@@ -1032,7 +1041,7 @@ def parse_nm(vmlinux, symbols=None):
         m = re.search(NM_RE, line)
         if m:
             if last_symbol is not None and ( symbols is None or last_name in symbols ):
-                last_symbol[NE_SIZE] = ( _int(m.group('addr')) - _int(last_symbol[NE_ADDR]) ) / BYTES_PER_INSN \
+                last_symbol[NE_SIZE] = old_div(( _int(m.group('addr')) - _int(last_symbol[NE_ADDR]) ), BYTES_PER_INSN) \
                             if \
                                 re.match(hex_re, last_symbol[NE_ADDR]) and \
                                 re.match(hex_re, m.group('addr')) \
@@ -1074,14 +1083,14 @@ def parse_sections(vmlinux):
     section_idx = 0
     while True:
         try:
-            line = it.next()
+            line = next(it)
         except StopIteration:
             break
 
         m = re.search(r'^Sections:', line)
         if m:
             # first section
-            it.next()
+            next(it)
             continue
 
         m = re.search((
@@ -1107,7 +1116,7 @@ def parse_sections(vmlinux):
                 [int, ['number']],
                 [parse_power, ['align']]]))
 
-            line = it.next()
+            line = next(it)
             # CONTENTS, ALLOC, LOAD, READONLY, CODE
             m = re.search((
             r'\s+(?P<type>.*)'
@@ -1125,7 +1134,7 @@ def coerce(dic, funcs, default=lambda x: x):
         for field in fields:
             field_to_func[field] = f
 
-    fields = dic.keys()
+    fields = list(dic.keys())
     for field in fields:
         if field not in field_to_func:
             continue
@@ -1244,8 +1253,8 @@ def to_twos_compl(x, nbits):
 def byte_string(xs):
     if type(xs) == list:
         return ''.join(xs)
-    elif type(xs) in [int, long]:
-        return ''.join([chr((xs >> 8*i) & 0xff) for i in xrange(3, -1, 0-1)])
+    elif type(xs) in [int, int]:
+        return ''.join([chr((xs >> 8*i) & 0xff) for i in range(3, -1, 0-1)])
     return xs
 def hexint(b):
     return int(binascii.hexlify(byte_string(b)), 16)
@@ -1303,7 +1312,7 @@ if common.run_from_ipython():
     #import pdb; pdb.set_trace()
     o = load_and_cache_objdump(sample_vmlinux_file, config_file=sample_config_file)
 
-    print "in function common.run_from_ipython()"
+    print("in function common.run_from_ipython()")
 
     def _instrument(func=None, skip=common.skip, validate=True, threads=DEFAULT_THREADS):
         instrument(o, func=func, skip=common.skip, skip_stp=common.skip_stp, skip_asm=common.skip_asm, threads=threads)

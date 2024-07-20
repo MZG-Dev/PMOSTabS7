@@ -11,6 +11,7 @@
 # This work is licensed under the terms of the GNU GPL version 2.
 #
 
+from builtins import str
 import gdb
 import sys
 
@@ -58,7 +59,7 @@ class LxDmesg(gdb.Command):
             time_stamp = utils.read_u64(log_buf[pos:pos + 8])
 
             for line in text.splitlines():
-                msg = u"[{time:12.6f}] {line}\n".format(
+                msg = "[{time:12.6f}] {line}\n".format(
                     time=time_stamp / 1000000000.0,
                     line=line)
                 # With python2 gdb.write will attempt to convert unicode to

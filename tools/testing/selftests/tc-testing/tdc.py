@@ -335,7 +335,7 @@ def test_runner(pm, args, filtered_tests):
 
     if args.pause:
         print('Want to pause\nPress enter to continue ...')
-        if input(sys.stdin):
+        if eval(input(sys.stdin)):
             print('got something on stdin')
 
     pm.call_post_suite(index)
@@ -511,7 +511,7 @@ def filter_tests_by_id(args, testlist):
         target_ids = args.execute
 
         if isinstance(target_ids, list) and (len(target_ids) > 0):
-            newlist = list(filter(lambda x: x['id'] in target_ids, testlist))
+            newlist = list([x for x in testlist if x['id'] in target_ids])
     return newlist
 
 def filter_tests_by_category(args, testlist):

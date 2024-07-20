@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
+from builtins import str
+from builtins import object
 import collections
 import re
 

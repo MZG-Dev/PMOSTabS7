@@ -1,3 +1,4 @@
+from builtins import object
 import re
 import pprint
 import os.path
@@ -16,7 +17,7 @@ ident_rec = re.compile(ident_re)
 
 class MyPrettyPrinter(pprint.PrettyPrinter):
     def format(self, object, context, maxlevels, level):
-        if isinstance(object, unicode):
+        if isinstance(object, str):
             return (object.encode('utf8'), True, False)
         return pprint.PrettyPrinter.format(self, object, context, maxlevels, level)
 

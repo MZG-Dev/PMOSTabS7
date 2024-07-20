@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: GPL-2.0
 # Copyright Thomas Gleixner <tglx@linutronix.de>
 
+
+
+from builtins import object
 from argparse import ArgumentParser
 from ply import lex, yacc
 import locale

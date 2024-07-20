@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: GPL-2.0
 #
 
+
+
+from builtins import str
 import sys, os, os.path, getopt
 import socket, time
 import subprocess
@@ -43,7 +46,7 @@ host = socket.gethostname()
 
 try: serverSocket.bind((host, 0))
 except socket.error as msg:
-    print('bind fails: ' + str(msg))
+    print(('bind fails: ' + str(msg)))
 
 sn = serverSocket.getsockname()
 serverPort = sn[1]

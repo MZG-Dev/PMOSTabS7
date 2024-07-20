@@ -7,6 +7,9 @@ It can parse, and change ELF file. This version works only with vmlinux and does
 UND symbols
 """
 
+from builtins import str
+from builtins import hex
+from builtins import object
 import subprocess
 import re
 import os
@@ -24,7 +27,7 @@ __email__ = "v.stupakov@samsung.com"
 __status__ = "Production"
 
 
-class Symbol:
+class Symbol(object):
     def __init__(self, name=str(), sym_type=str(), bind=str(), visibility=str(), addr=int(), size=int(), ndx=str()):
         self.utils = Utils()
         self.name = str(name)
@@ -44,7 +47,7 @@ class Symbol:
         return self.addr <= other.addr
 
 
-class Section:
+class Section(object):
     def __init__(self, name=str(), sec_type=str(), addr=int(), offset=int(), size=int()):
         self.utils = Utils()
         self.name = str(name)
@@ -62,7 +65,7 @@ class Section:
         return self.addr <= other.addr
 
 
-class ELF:
+class ELF(object):
     """
     Utils for manipulating over ELF
     """
@@ -236,7 +239,7 @@ class ELF:
         :return: Symbol() or [Symbol()]
         """
         if isinstance(sym_names, str):
-            for addr, symbol_obj in self.get_symbols().items():
+            for addr, symbol_obj in list(self.get_symbols().items()):
                 if symbol_obj.name == sym_names:
                     return symbol_obj
         elif isinstance(sym_names, list):
@@ -255,7 +258,7 @@ class ELF:
         if isinstance(vaddrs, int):
             if vaddrs in self.get_symbols():
                 return self.get_symbols()[vaddrs]
-            for addr, symbol_obj in self.get_symbols().items():
+            for addr, symbol_obj in list(self.get_symbols().items()):
                 if (addr + symbol_obj.size) >= vaddrs >= addr:
                     return symbol_obj
         elif isinstance(vaddrs, list):
@@ -272,7 +275,7 @@ class ELF:
         :return: Section() or [Section()]
         """
         if isinstance(sec_names, str):
-            for addr, section_obj in self.get_sections().items():
+            for addr, section_obj in list(self.get_sections().items()):
                 if section_obj.name == sec_names:
                     return section_obj
         elif isinstance(sec_names, list):
@@ -291,7 +294,7 @@ class ELF:
         if isinstance(vaddrs, int):
             if vaddrs in self.get_sections():
                 return self.get_sections()[vaddrs]
-            for addr, section_obj in self.get_sections().items():
+            for addr, section_obj in list(self.get_sections().items()):
                 if (addr + section_obj.size) >= vaddrs >= addr:
                     return section_obj
         elif isinstance(vaddrs, list):

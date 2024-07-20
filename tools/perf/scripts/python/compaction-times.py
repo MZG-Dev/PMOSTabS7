@@ -1,9 +1,12 @@
+
 # report time spent in compaction
 # Licensed under the terms of the GNU GPL License version 2
 
 # testing:
 # 'echo 1 > /proc/sys/vm/compact_memory' to force compaction of all zones
 
+from past.utils import old_div
+from builtins import object
 import os
 import sys
 import re
@@ -13,19 +16,19 @@ signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 usage = "usage: perf script report compaction-times.py -- [-h] [-u] [-p|-pv] [-t | [-m] [-fs] [-ms]] [pid|pid-range|comm-regex]\n"
 
-class popt:
+class popt(object):
 	DISP_DFL = 0
 	DISP_PROC = 1
 	DISP_PROC_VERBOSE=2
 
-class topt:
+class topt(object):
 	DISP_TIME = 0
 	DISP_MIG = 1
 	DISP_ISOLFREE = 2
 	DISP_ISOLMIG = 4
 	DISP_ALL = 7
 
-class comm_filter:
+class comm_filter(object):
 	def __init__(self, re):
 		self.re = re
 
@@ -33,7 +36,7 @@ class comm_filter:
 		m = self.re.search(comm)
 		return m == None or m.group() == ""
 
-class pid_filter:
+class pid_filter(object):
 	def __init__(self, low, high):
 		self.low = (0 if low == "" else int(low))
 		self.high = (0 if high == "" else int(high))
@@ -49,9 +52,9 @@ def ns(sec, nsec):
 	return (sec * 1000000000) + nsec
 
 def time(ns):
-	return "%dns" % ns if opt_ns else "%dus" % (round(ns, -3) / 1000)
+	return "%dns" % ns if opt_ns else "%dus" % (old_div(round(ns, -3), 1000))
 
-class pair:
+class pair(object):
 	def __init__(self, aval, bval, alabel = None, blabel = None):
 		self.alabel = alabel
 		self.blabel = blabel
@@ -66,7 +69,7 @@ class pair:
 	def __str__(self):
 		return "%s=%d %s=%d" % (self.alabel, self.aval, self.blabel, self.bval)
 
-class cnode:
+class cnode(object):
 	def __init__(self, ns):
 		self.ns = ns
 		self.migrated = pair(0, 0, "moved", "failed")
@@ -105,7 +108,7 @@ class cnode:
 			self.mscan += mscan
 
 
-class chead:
+class chead(object):
 	heads = {}
 	val = cnode(0);
 	fobj = None

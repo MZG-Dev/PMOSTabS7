@@ -3,6 +3,9 @@
 
 # A thin wrapper on top of the KUnit Kernel
 
+
+
+from builtins import object
 import argparse
 import sys
 import os
@@ -33,7 +36,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
 	if config_result.status != kunit_kernel.ConfigStatus.SUCCESS:
 		return KunitResult(KunitStatus.CONFIG_FAILURE, config_result)
 
-	print(kunit_parser.timestamp('Building KUnit Kernel ...'))
+	print((kunit_parser.timestamp('Building KUnit Kernel ...')))
 
 	build_start = time.time()
 	build_result = linux.build_um_kernel(request.jobs)
@@ -41,7 +44,7 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
 	if build_result.status != kunit_kernel.BuildStatus.SUCCESS:
 		return KunitResult(KunitStatus.BUILD_FAILURE, build_result)
 
-	print(kunit_parser.timestamp('Starting KUnit Kernel ...'))
+	print((kunit_parser.timestamp('Starting KUnit Kernel ...')))
 	test_start = time.time()
 
 	test_result = kunit_parser.TestResult(kunit_parser.TestStatus.SUCCESS,
@@ -57,13 +60,13 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
 	test_end = time.time()
 	test_result.print_pretty_log()
 
-	print(kunit_parser.timestamp((
+	print((kunit_parser.timestamp((
 		'Elapsed time: %.3fs total, %.3fs configuring, %.3fs ' +
 		'building, %.3fs running.\n') % (
 				test_end - config_start,
 				config_end - config_start,
 				build_end - build_start,
-				test_end - test_start)))
+				test_end - test_start))))
 
 	if test_result.status != kunit_parser.TestStatus.SUCCESS:
 		return KunitResult(KunitStatus.TEST_FAILURE, test_result)

@@ -4,6 +4,13 @@
 
 # Build the kernel for all targets using the Android build environment.
 
+
+
+
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 from collections import namedtuple
 import glob
 from optparse import OptionParser
@@ -13,7 +20,7 @@ import shutil
 import subprocess
 import sys
 import threading
-import Queue
+import queue
 
 version = 'build-all.py, version 1.99'
 
@@ -80,7 +87,7 @@ class BuildSequence(namedtuple('BuildSequence', ['log_name', 'short_name', 'step
         if not self.status:
             self.status = BuildResult(None, messages)
 
-class BuildTracker:
+class BuildTracker(object):
     """Manages all of the steps necessary to perform a build.  The
     build consists of one or more sequences of steps.  The different
     sequences can be processed independently, while the steps within a
@@ -107,7 +114,7 @@ class BuildTracker:
         seq.set_width(self.longest)
         tok = self.build_tokens.get()
         with self.lock:
-            print "Building:", seq.short_name
+            print(("Building:", seq.short_name))
         with seq:
             seq.run()
             self.results.put(seq.status)
@@ -115,12 +122,12 @@ class BuildTracker:
 
     def run(self):
         self.longest = self.longest_name()
-        self.results = Queue.Queue()
+        self.results = queue.Queue()
         children = []
         errors = []
-        self.build_tokens = Queue.Queue()
+        self.build_tokens = queue.Queue()
         nthreads = self.parallel_builds
-        print "Building with", nthreads, "threads"
+        print(("Building with", nthreads, "threads"))
         for i in range(nthreads):
             self.build_tokens.put(True)
         for seq in self.sequence:
@@ -132,7 +139,7 @@ class BuildTracker:
             if all_options.verbose:
                 with self.lock:
                     for line in stats.messages:
-                        print line
+                        print(line)
                     sys.stdout.flush()
             if stats.status:
                 errors.append(stats.status)
@@ -141,7 +148,7 @@ class BuildTracker:
         if errors:
             fail("\n  ".join(["Failed targets:"] + errors))
 
-class PrintStep:
+class PrintStep(object):
     """A step that just prints a message"""
     def __init__(self, message):
         self.message = message
@@ -149,7 +156,7 @@ class PrintStep:
     def run(self, outp):
         outp(self.message)
 
-class MkdirStep:
+class MkdirStep(object):
     """A step that makes a directory"""
     def __init__(self, direc):
         self.direc = direc
@@ -158,7 +165,7 @@ class MkdirStep:
         outp("mkdir %s" % self.direc)
         os.mkdir(self.direc)
 
-class RmtreeStep:
+class RmtreeStep(object):
     def __init__(self, direc):
         self.direc = direc
 
@@ -166,7 +173,7 @@ class RmtreeStep:
         outp("rmtree %s" % self.direc)
         shutil.rmtree(self.direc, ignore_errors=True)
 
-class CopyfileStep:
+class CopyfileStep(object):
     def __init__(self, src, dest):
         self.src = src
         self.dest = dest
@@ -175,7 +182,7 @@ class CopyfileStep:
         outp("cp %s %s" % (self.src, self.dest))
         shutil.copyfile(self.src, self.dest)
 
-class ExecStep:
+class ExecStep(object):
     def __init__(self, cmd, **kwargs):
         self.cmd = cmd
         self.kwargs = kwargs
@@ -200,7 +207,7 @@ class ExecStep:
             else:
                 return None
 
-class Builder():
+class Builder(object):
 
     def __init__(self, name, defconfig):
         self.name = name
@@ -273,14 +280,14 @@ def scan_configs():
     return names
 
 def build_many(targets):
-    print "Building %d target(s)" % len(targets)
+    print(("Building %d target(s)" % len(targets)))
 
     # To try and make up for the link phase being serial, try to do
     # two full builds in parallel.  Don't do too many because lots of
     # parallel builds tends to use up available memory rather quickly.
     parallel = 2
     if all_options.jobs and all_options.jobs > 1:
-        j = max(all_options.jobs / parallel, 2)
+        j = max(old_div(all_options.jobs, parallel), 2)
         make_command.append("-j" + str(j))
 
     tracker = BuildTracker(parallel)
@@ -325,9 +332,9 @@ def main():
     all_options = options
 
     if options.list:
-        print "Available targets:"
+        print("Available targets:")
         for target in configs:
-            print "   %s" % target.name
+            print(("   %s" % target.name))
         sys.exit(0)
 
     if options.make_target:
@@ -342,7 +349,7 @@ def main():
         targets = []
         for t in args:
             if t not in all_configs:
-                parser.error("Target '%s' not one of %s" % (t, all_configs.keys()))
+                parser.error("Target '%s' not one of %s" % (t, list(all_configs.keys())))
             targets.append(all_configs[t])
         build_many(targets)
     else:

@@ -1,3 +1,7 @@
+
+
+from builtins import map
+from builtins import object
 import re
 from datetime import datetime
 
@@ -22,7 +26,7 @@ class TestResult(object):
 		self.log_lines.append(msg)
 
 	def print_pretty_log(self):
-		print('\n'.join(self.log_lines))
+		print(('\n'.join(self.log_lines)))
 
 TestModule = namedtuple('TestModule', ['status','name','cases'])
 
@@ -150,7 +154,7 @@ def parse_run_tests(kernel_output):
 				failed_tests.add(get_test_name(match))
 				test_result.pretty_log(timestamp(red("[FAILED] " +
 									get_test_name(match))))
-				for out in timestamp_log(map(yellow, current_case_log)):
+				for out in timestamp_log(list(map(yellow, current_case_log))):
 					test_result.pretty_log(out)
 				test_result.pretty_log(timestamp(""))
 				current_module_cases.append(

@@ -9,14 +9,20 @@
 # This software is distributed under the terms of the GNU General
 # Public License ("GPL") version 2 as published by the Free Software
 # Foundation.
-from __future__ import print_function
 
+
+
+
+
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import os
 import sys
 
 from collections import defaultdict
 try:
-    from UserList import UserList
+    from collections import UserList
 except ImportError:
     # Python 3: UserList moved to the collections package
     from collections import UserList
@@ -35,7 +41,7 @@ threads = { 0 : "idle"}
 def thread_name(pid):
 	return "%s:%d" % (threads[pid], pid)
 
-class RunqueueEventUnknown:
+class RunqueueEventUnknown(object):
 	@staticmethod
 	def color():
 		return None
@@ -43,7 +49,7 @@ class RunqueueEventUnknown:
 	def __repr__(self):
 		return "unknown"
 
-class RunqueueEventSleep:
+class RunqueueEventSleep(object):
 	@staticmethod
 	def color():
 		return (0, 0, 0xff)
@@ -54,7 +60,7 @@ class RunqueueEventSleep:
 	def __repr__(self):
 		return "%s gone to sleep" % thread_name(self.sleeper)
 
-class RunqueueEventWakeup:
+class RunqueueEventWakeup(object):
 	@staticmethod
 	def color():
 		return (0xff, 0xff, 0)
@@ -65,7 +71,7 @@ class RunqueueEventWakeup:
 	def __repr__(self):
 		return "%s woke up" % thread_name(self.wakee)
 
-class RunqueueEventFork:
+class RunqueueEventFork(object):
 	@staticmethod
 	def color():
 		return (0, 0xff, 0)
@@ -76,7 +82,7 @@ class RunqueueEventFork:
 	def __repr__(self):
 		return "new forked task %s" % thread_name(self.child)
 
-class RunqueueMigrateIn:
+class RunqueueMigrateIn(object):
 	@staticmethod
 	def color():
 		return (0, 0xf0, 0xff)
@@ -87,7 +93,7 @@ class RunqueueMigrateIn:
 	def __repr__(self):
 		return "task migrated in %s" % thread_name(self.new)
 
-class RunqueueMigrateOut:
+class RunqueueMigrateOut(object):
 	@staticmethod
 	def color():
 		return (0xff, 0, 0xff)
@@ -98,7 +104,7 @@ class RunqueueMigrateOut:
 	def __repr__(self):
 		return "task migrated out %s" % thread_name(self.old)
 
-class RunqueueSnapshot:
+class RunqueueSnapshot(object):
 	def __init__(self, tasks = [0], event = RunqueueEventUnknown()):
 		self.tasks = tuple(tasks)
 		self.event = event
@@ -160,7 +166,7 @@ class RunqueueSnapshot:
 
 		return ret
 
-class TimeSlice:
+class TimeSlice(object):
 	def __init__(self, start, prev):
 		self.start = start
 		self.prev = prev
@@ -247,7 +253,7 @@ class TimeSliceList(UserList):
 			if start == end or start == end - 1:
 				searching = False
 
-			i = (end + start) / 2
+			i = old_div((end + start), 2)
 			if self.data[i].start <= ts and self.data[i].end >= ts:
 				found = i
 				end = i
@@ -273,8 +279,8 @@ class TimeSliceList(UserList):
 		rq = ts.rqs[cpu]
 		raw = "CPU: %d\n" % cpu
 		raw += "Last event : %s\n" % rq.event.__repr__()
-		raw += "Timestamp : %d.%06d\n" % (ts.start / (10 ** 9), (ts.start % (10 ** 9)) / 1000)
-		raw += "Duration : %6d us\n" % ((ts.end - ts.start) / (10 ** 6))
+		raw += "Timestamp : %d.%06d\n" % (old_div(ts.start, (10 ** 9)), old_div((ts.start % (10 ** 9)), 1000))
+		raw += "Duration : %6d us\n" % (old_div((ts.end - ts.start), (10 ** 6)))
 		raw += "Load = %d\n" % rq.load()
 		for t in rq.tasks:
 			raw += "%s \n" % thread_name(t)
@@ -327,7 +333,7 @@ class TimeSliceList(UserList):
 		return max_cpu
 
 
-class SchedEventProxy:
+class SchedEventProxy(object):
 	def __init__(self):
 		self.current_tsk = defaultdict(lambda : -1)
 		self.timeslices = TimeSliceList()
@@ -340,8 +346,8 @@ class SchedEventProxy:
 		on_cpu_task = self.current_tsk[headers.cpu]
 
 		if on_cpu_task != -1 and on_cpu_task != prev_pid:
-			print("Sched switch event rejected ts: %s cpu: %d prev: %s(%d) next: %s(%d)" % \
-				headers.ts_format(), headers.cpu, prev_comm, prev_pid, next_comm, next_pid)
+			print(("Sched switch event rejected ts: %s cpu: %d prev: %s(%d) next: %s(%d)" % \
+				headers.ts_format(), headers.cpu, prev_comm, prev_pid, next_comm, next_pid))
 
 		threads[prev_pid] = prev_comm
 		threads[next_pid] = next_comm

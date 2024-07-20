@@ -11,12 +11,16 @@
 # which was converted to Perl by Matthew Chapman, which was converted
 # to Python by David Mosberger.
 #
+
+
+
+from past.utils import old_div
 import os
 import re
 import sys
 
 if len(sys.argv) != 2:
-    print("Usage: %s FILE" % sys.argv[0])
+    print(("Usage: %s FILE" % sys.argv[0]))
     sys.exit(2)
 
 readelf = os.getenv("READELF", "readelf")
@@ -29,7 +33,7 @@ def check_func (func, slots, rlen_sum):
         global num_errors
         num_errors += 1
         if not func: func = "[%#x-%#x]" % (start, end)
-        print("ERROR: %s: %lu slots, total region length = %lu" % (func, slots, rlen_sum))
+        print(("ERROR: %s: %lu slots, total region length = %lu" % (func, slots, rlen_sum)))
     return
 
 num_funcs = 0
@@ -45,7 +49,7 @@ for line in os.popen("%s -u %s" % (readelf, sys.argv[1])):
         func  = m.group(1)
         start = int(m.group(2), 16)
         end   = int(m.group(3), 16)
-        slots = 3 * (end - start) / 16
+        slots = old_div(3 * (end - start), 16)
         rlen_sum = 0
         num_funcs += 1
     else:
@@ -55,11 +59,11 @@ for line in os.popen("%s -u %s" % (readelf, sys.argv[1])):
 check_func(func, slots, rlen_sum)
 
 if num_errors == 0:
-    print("No errors detected in %u functions." % num_funcs)
+    print(("No errors detected in %u functions." % num_funcs))
 else:
     if num_errors > 1:
         err="errors"
     else:
         err="error"
-    print("%u %s detected in %u functions." % (num_errors, err, num_funcs))
+    print(("%u %s detected in %u functions." % (num_errors, err, num_funcs)))
     sys.exit(1)

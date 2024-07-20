@@ -22,7 +22,13 @@ Prerequisites:
     see print_help(): for Usage and Output details
 
 """
-from __future__ import print_function
+
+
+
+
+from builtins import str
+from builtins import range
+from past.utils import old_div
 from datetime import datetime
 import subprocess
 import os
@@ -92,7 +98,7 @@ def print_help():
     print('      *.png - a variety of PNG format plot files created from the trace contents and the additional calculations.')
     print('  Notes:')
     print('    Avoid the use of _ (underscore) in test names, because in gnuplot it is a subscript directive.')
-    print('    Maximum number of CPUs is {0:d}. If there are more the script will abort with an error.'.format(MAX_CPUS))
+    print(('    Maximum number of CPUs is {0:d}. If there are more the script will abort with an error.'.format(MAX_CPUS)))
     print('    Off-line CPUs cause the script to list some warnings, and create some empty files. Use the CPU mask feature for a clean run.')
     print('    Empty y range warnings for autoscaled plots can occur and can be ignored.')
 
@@ -432,7 +438,7 @@ def read_trace_data(filename):
     try:
         data = open(filename, 'r').read()
     except:
-        print('Error opening ', filename)
+        print(('Error opening ', filename))
         sys.exit(2)
 
     for line in data.splitlines():
@@ -464,7 +470,7 @@ def read_trace_data(filename):
                 io_boost = search_obj.group(1)
 
             if sample_num == 0 :
-                start_time = Decimal(time_pre_dec) + Decimal(time_post_dec) / Decimal(1000000)
+                start_time = Decimal(time_pre_dec) + old_div(Decimal(time_post_dec), Decimal(1000000))
             sample_num += 1
 
             if last_sec_cpu[cpu_int] == 0 :
@@ -472,17 +478,17 @@ def read_trace_data(filename):
                 last_usec_cpu[cpu_int] = time_post_dec
             else :
                 duration_us = (int(time_pre_dec) - int(last_sec_cpu[cpu_int])) * 1000000 + (int(time_post_dec) - int(last_usec_cpu[cpu_int]))
-                duration_ms = Decimal(duration_us) / Decimal(1000)
+                duration_ms = old_div(Decimal(duration_us), Decimal(1000))
                 last_sec_cpu[cpu_int] = time_pre_dec
                 last_usec_cpu[cpu_int] = time_post_dec
-                elapsed_time = Decimal(time_pre_dec) + Decimal(time_post_dec) / Decimal(1000000) - start_time
-                load = Decimal(int(mperf)*100)/ Decimal(tsc)
-                freq_ghz = Decimal(freq)/Decimal(1000000)
+                elapsed_time = Decimal(time_pre_dec) + old_div(Decimal(time_post_dec), Decimal(1000000)) - start_time
+                load = old_div(Decimal(int(mperf)*100), Decimal(tsc))
+                freq_ghz = old_div(Decimal(freq),Decimal(1000000))
 #               Sanity check calculation, typically anomalies indicate missed samples
 #               However, check for 0 (should never occur)
                 tsc_ghz = Decimal(0)
                 if duration_ms != Decimal(0) :
-                    tsc_ghz = Decimal(tsc)/duration_ms/Decimal(1000000)
+                    tsc_ghz = old_div(old_div(Decimal(tsc),duration_ms),Decimal(1000000))
                 store_csv(cpu_int, time_pre_dec, time_post_dec, core_busy, scaled, _from, _to, mperf, aperf, tsc, freq_ghz, io_boost, common_comm, load, duration_ms, sample_num, elapsed_time, tsc_ghz)
 
             if cpu_int > current_max_cpu:
@@ -577,7 +583,7 @@ if interval:
     clear_trace_file()
     set_trace_buffer_size()
     enable_trace()
-    print('Sleeping for ', interval, 'seconds')
+    print(('Sleeping for ', interval, 'seconds'))
     time.sleep(int(interval))
     disable_trace()
 

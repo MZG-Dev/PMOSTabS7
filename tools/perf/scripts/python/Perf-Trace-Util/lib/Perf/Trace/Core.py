@@ -1,3 +1,4 @@
+
 # Core.py - Python extension for perf script, core functions
 #
 # Copyright (C) 2010 by Tom Zanussi <tzanussi@gmail.com>
@@ -6,6 +7,8 @@
 # Public License ("GPL") version 2 as published by the Free Software
 # Foundation.
 
+from builtins import object
+from past.utils import old_div
 from collections import defaultdict
 
 def autodict():
@@ -99,7 +102,7 @@ def taskState(state):
 	return states[state]
 
 
-class EventHeaders:
+class EventHeaders(object):
 	def __init__(self, common_cpu, common_secs, common_nsecs,
 		     common_pid, common_comm, common_callchain):
 		self.cpu = common_cpu
@@ -113,4 +116,4 @@ class EventHeaders:
 		return (self.secs * (10 ** 9)) + self.nsecs
 
 	def ts_format(self):
-		return "%d.%d" % (self.secs, int(self.nsecs / 1000))
+		return "%d.%d" % (self.secs, int(old_div(self.nsecs, 1000)))

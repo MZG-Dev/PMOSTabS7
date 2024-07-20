@@ -9,6 +9,10 @@ Kconfig unit testing framework.
 This provides fixture functions commonly used from test files.
 """
 
+
+
+from builtins import str
+from builtins import object
 import os
 import pytest
 import shutil
@@ -18,7 +22,7 @@ import tempfile
 CONF_PATH = os.path.abspath(os.path.join('scripts', 'kconfig', 'conf'))
 
 
-class Conf:
+class Conf(object):
     """Kconfig runner and result checker.
 
     This class provides methods to run text-based interface of Kconfig
@@ -97,19 +101,19 @@ class Conf:
         # of tests, the captured log will be displayed.  This will be useful to
         # figure out what has happened.
 
-        print("[command]\n{}\n".format(' '.join(command)))
+        print(("[command]\n{}\n".format(' '.join(command))))
 
-        print("[retcode]\n{}\n".format(self.retcode))
+        print(("[retcode]\n{}\n".format(self.retcode)))
 
         print("[stdout]")
-        print(self.stdout)
+        print((self.stdout))
 
         print("[stderr]")
-        print(self.stderr)
+        print((self.stderr))
 
         if self.config is not None:
-            print("[output for '{}']".format(out_file))
-            print(self.config)
+            print(("[output for '{}']".format(out_file)))
+            print((self.config))
 
         return self.retcode
 

@@ -1,3 +1,6 @@
+
+
+
 # Util.py - Python extension for perf script, miscellaneous utility code
 #
 # Copyright (C) 2010 by Tom Zanussi <tzanussi@gmail.com>
@@ -5,8 +8,10 @@
 # This software may be distributed under the terms of the GNU General
 # Public License ("GPL") version 2 as published by the Free Software
 # Foundation.
-from __future__ import print_function
 
+
+from builtins import str
+from past.utils import old_div
 import errno, os
 
 FUTEX_WAIT = 0
@@ -18,13 +23,13 @@ FUTEX_CMD_MASK = ~(FUTEX_PRIVATE_FLAG | FUTEX_CLOCK_REALTIME)
 NSECS_PER_SEC    = 1000000000
 
 def avg(total, n):
-    return total / n
+    return old_div(total, n)
 
 def nsecs(secs, nsecs):
     return secs * NSECS_PER_SEC + nsecs
 
 def nsecs_secs(nsecs):
-    return nsecs / NSECS_PER_SEC
+    return old_div(nsecs, NSECS_PER_SEC)
 
 def nsecs_nsecs(nsecs):
     return nsecs % NSECS_PER_SEC
@@ -42,7 +47,7 @@ def add_stats(dict, key, value):
 			min = value
 		if value > max:
 			max = value
-		avg = (avg + value) / 2
+		avg = old_div((avg + value), 2)
 		dict[key] = (min, max, avg, count + 1)
 
 def clear_term():

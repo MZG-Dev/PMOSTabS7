@@ -1,3 +1,4 @@
+
 # SchedGui.py - Python extension for perf script, basic GUI code for
 #		traces drawing and overview.
 #
@@ -8,6 +9,7 @@
 # Foundation.
 
 
+from past.utils import old_div
 try:
 	import wx
 except ImportError:
@@ -40,12 +42,12 @@ class RootFrame(wx.Frame):
 
 		# scrollable container
 		self.scroll = wx.ScrolledWindow(self.panel)
-		self.scroll.SetScrollbars(self.scroll_scale, self.scroll_scale, self.width_virtual / self.scroll_scale, self.height_virtual / self.scroll_scale)
+		self.scroll.SetScrollbars(self.scroll_scale, self.scroll_scale, old_div(self.width_virtual, self.scroll_scale), old_div(self.height_virtual, self.scroll_scale))
 		self.scroll.EnableScrolling(True, True)
 		self.scroll.SetFocus()
 
 		# scrollable drawing area
-		self.scroll_panel = wx.Panel(self.scroll, size=(self.screen_width - 15, self.screen_height / 2))
+		self.scroll_panel = wx.Panel(self.scroll, size=(self.screen_width - 15, old_div(self.screen_height, 2)))
 		self.scroll_panel.Bind(wx.EVT_PAINT, self.on_paint)
 		self.scroll_panel.Bind(wx.EVT_KEY_DOWN, self.on_key_press)
 		self.scroll_panel.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_down)
@@ -63,10 +65,10 @@ class RootFrame(wx.Frame):
 		self.Show(True)
 
 	def us_to_px(self, val):
-		return val / (10 ** 3) * self.zoom
+		return old_div(val, (10 ** 3)) * self.zoom
 
 	def px_to_us(self, val):
-		return (val / self.zoom) * (10 ** 3)
+		return (old_div(val, self.zoom)) * (10 ** 3)
 
 	def scroll_start(self):
 		(x, y) = self.scroll.GetViewStart()
@@ -117,7 +119,7 @@ class RootFrame(wx.Frame):
 
 	def rect_from_ypixel(self, y):
 		y -= RootFrame.Y_OFFSET
-		rect = y / (RootFrame.RECT_HEIGHT + RootFrame.RECT_SPACE)
+		rect = old_div(y, (RootFrame.RECT_HEIGHT + RootFrame.RECT_SPACE))
 		height = y % (RootFrame.RECT_HEIGHT + RootFrame.RECT_SPACE)
 
 		if rect < 0 or rect > self.nr_rects - 1 or height > RootFrame.RECT_HEIGHT:
@@ -128,7 +130,7 @@ class RootFrame(wx.Frame):
 	def update_summary(self, txt):
 		if self.txt:
 			self.txt.Destroy()
-		self.txt = wx.StaticText(self.panel, -1, txt, (0, (self.screen_height / 2) + 50))
+		self.txt = wx.StaticText(self.panel, -1, txt, (0, (old_div(self.screen_height, 2)) + 50))
 
 
 	def on_mouse_down(self, event):
@@ -148,8 +150,8 @@ class RootFrame(wx.Frame):
 	def __zoom(self, x):
 		self.update_width_virtual()
 		(xpos, ypos) = self.scroll.GetViewStart()
-		xpos = self.us_to_px(x) / self.scroll_scale
-		self.scroll.SetScrollbars(self.scroll_scale, self.scroll_scale, self.width_virtual / self.scroll_scale, self.height_virtual / self.scroll_scale, xpos, ypos)
+		xpos = old_div(self.us_to_px(x), self.scroll_scale)
+		self.scroll.SetScrollbars(self.scroll_scale, self.scroll_scale, old_div(self.width_virtual, self.scroll_scale), old_div(self.height_virtual, self.scroll_scale), xpos, ypos)
 		self.Refresh()
 
 	def zoom_in(self):

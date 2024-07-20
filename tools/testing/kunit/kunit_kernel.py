@@ -1,5 +1,9 @@
+
+
 # SPDX-License-Identifier: GPL-2.0
 
+from builtins import str
+from builtins import object
 import logging
 import subprocess
 import os
@@ -88,7 +92,7 @@ def throw_error_if_not_subset(expected_superset: kunit_config.Kconfig,
 		)
 		raise ConfigError(message)
 
-class ExtKunitconfigGenerator():
+class ExtKunitconfigGenerator(object):
     '''
     Generate a new kunitconfig what you interested in.
     kunitconfigs/kunitconfig : original kunitconfig (when there is no external-config opt)

@@ -6,6 +6,8 @@ This script is needed for buildtime integrity routine.
 It calculates and embeds HMAC and other needed stuff for in terms of FIPS 140-2
 """
 
+
+
 import os
 import sys
 from IntegrityRoutine import IntegrityRoutine
@@ -34,7 +36,7 @@ if __name__ == "__main__":
     #print("python version:\n{}\n".format(sys.version))
 
     if len(sys.argv) != 2:
-        print("Usage " + sys.argv[0] + " elf_file")
+        print(("Usage " + sys.argv[0] + " elf_file"))
         sys.exit(-1)
 
     elf_file = os.path.abspath(sys.argv[1])

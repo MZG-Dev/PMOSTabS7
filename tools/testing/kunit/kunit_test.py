@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from builtins import str
+from builtins import object
 import unittest
 from unittest import mock
 
@@ -238,7 +240,7 @@ class KUnitMainTest(unittest.TestCase):
 		self.print_mock.assert_any_call(StrContains('aspeed_i2c'))
 
 
-class TestConfigProvider():
+class TestConfigProvider(object):
 	def __init__(self, kconfig):
 		self._kconfig = kconfig
 
@@ -316,7 +318,7 @@ class KUnitKernelTest(unittest.TestCase):
 			tempConfig.seek(0)
 
 			returnValue = tree.build_reconfig()
-			self.assertEquals(returnValue.status, kunit_kernel.ConfigStatus.SUCCESS,
+			self.assertEqual(returnValue.status, kunit_kernel.ConfigStatus.SUCCESS,
 				returnValue.info)
 
 	def test_build_reconfig_delete_config_line(self):
@@ -337,7 +339,7 @@ class KUnitKernelTest(unittest.TestCase):
 			tempConfig.seek(0)
 
 			returnValue = tree.build_reconfig()
-			self.assertEquals(returnValue.status, kunit_kernel.ConfigStatus.FAILURE)
+			self.assertEqual(returnValue.status, kunit_kernel.ConfigStatus.FAILURE)
 
 	def test_build_reconfig_add_config_line(self):
 		tempConfig = tempfile.NamedTemporaryFile(delete=False, mode="w+")
@@ -354,7 +356,7 @@ class KUnitKernelTest(unittest.TestCase):
 			tempConfig.seek(0)
 
 			returnValue = tree.build_reconfig()
-			self.assertEquals(returnValue.status, kunit_kernel.ConfigStatus.SUCCESS,
+			self.assertEqual(returnValue.status, kunit_kernel.ConfigStatus.SUCCESS,
 				returnValue.info)
 
 	def test_build_reconfig_file_unavailable(self):
@@ -373,7 +375,7 @@ class KUnitKernelTest(unittest.TestCase):
 			tempConfig.seek(0)
 
 			returnValue = tree.build_reconfig()
-			self.assertEquals(returnValue.status, kunit_kernel.ConfigStatus.SUCCESS,
+			self.assertEqual(returnValue.status, kunit_kernel.ConfigStatus.SUCCESS,
 				returnValue.info)
 
 class TestExtKunitconfigGenerator(unittest.TestCase):

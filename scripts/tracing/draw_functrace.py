@@ -22,9 +22,12 @@ Usage:
 """
 
 
+
+
+from builtins import object
 import sys, re
 
-class CallTree:
+class CallTree(object):
 	""" This class provides a tree representation of the functions
 		call stack. If a function has no parent in the kernel (interrupt,
 		syscall, kernel thread...) then it is attached to a virtual parent
@@ -123,7 +126,7 @@ def main():
 		tree = tree.getParent(caller)
 		tree = tree.calls(callee, calltime)
 
-	print(CallTree.ROOT)
+	print((CallTree.ROOT))
 
 if __name__ == "__main__":
 	main()

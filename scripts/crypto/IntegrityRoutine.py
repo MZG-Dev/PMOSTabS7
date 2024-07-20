@@ -6,6 +6,10 @@ Module IntegrityRoutine Contains IntegrityRoutine class helps with FIPS 140-2 bu
 This module is needed to calculate HMAC and embed other needed stuff.
 """
 
+
+
+from builtins import hex
+from builtins import range
 import hmac
 import hashlib
 import bisect
@@ -88,7 +92,7 @@ class IntegrityRoutine(ELF):
         if gaps == None:
             return [[0, 0]]
 
-        for section_name, sym_names in sec_sym_sequence.items():
+        for section_name, sym_names in list(sec_sym_sequence.items()):
             for symbol in self.get_symbol_by_name(sym_names):
                 addrs_for_hmac.append(symbol.addr)
         addrs_for_hmac.extend(self.utils.flatten(gaps))
@@ -233,10 +237,10 @@ class IntegrityRoutine(ELF):
         if print_reloc_addrs is True:
             table_format += "{:32} |"
 
-        print(table_format.format("N", "symbol name", "symbol address", "symbol section", "bytes skipped",
-                                  "skipped bytes address range"))
+        print((table_format.format("N", "symbol name", "symbol address", "symbol section", "bytes skipped",
+                                  "skipped bytes address range")))
         data_to_print = list()
-        for sec_name, sym_names in sec_sym.items():
+        for sec_name, sym_names in list(sec_sym.items()):
             for symbol_start, symbol_end in self.utils.pairwise(self.get_symbol_by_name(sym_names)):
                 symbol_sec_in_range = self.find_symbols_between_vaddrs(symbol_start.addr, symbol_end.addr)
                 for symbol, section in symbol_sec_in_range:
@@ -257,18 +261,18 @@ class IntegrityRoutine(ELF):
             symbol_covered_size += symbol.size
             skipped_bytes_size += skipped_bytes
             if print_reloc_addrs is True:
-                print(table_format.format(cnt, symbol.name, hex(symbol.addr), section.name,
-                                          self.utils.human_size(skipped_bytes), reloc_addrs_str))
+                print((table_format.format(cnt, symbol.name, hex(symbol.addr), section.name,
+                                          self.utils.human_size(skipped_bytes), reloc_addrs_str)))
             else:
-                print(table_format.format(cnt, symbol.name, hex(symbol.addr), section.name,
-                                          self.utils.human_size(skipped_bytes)))
+                print((table_format.format(cnt, symbol.name, hex(symbol.addr), section.name,
+                                          self.utils.human_size(skipped_bytes))))
         addrs_for_hmac = self.get_addrs_for_hmac(sec_sym, relocs)
         all_covered_size = 0
         for addr_start, addr_end in addrs_for_hmac:
             all_covered_size += addr_end - addr_start
-        print("Symbol covered bytes len: {} ".format(self.utils.human_size(symbol_covered_size - skipped_bytes_size)))
-        print("All covered bytes len   : {} ".format(self.utils.human_size(all_covered_size)))
-        print("Skipped bytes len       : {} ".format(self.utils.human_size(skipped_bytes_size)))
+        print(("Symbol covered bytes len: {} ".format(self.utils.human_size(symbol_covered_size - skipped_bytes_size))))
+        print(("All covered bytes len   : {} ".format(self.utils.human_size(all_covered_size))))
+        print(("Skipped bytes len       : {} ".format(self.utils.human_size(skipped_bytes_size))))
 
     def dump_covered_bytes(self, vaddr_seq, out_file):
         """
@@ -322,10 +326,10 @@ class IntegrityRoutine(ELF):
         self.embed_bytes(self.get_symbol_by_name(module_name + "_buildtime_address").addr,
                         self.utils.to_bytearray(self.get_symbol_by_name(module_name + "_buildtime_address").addr))
 
-        print("HMAC for \"{}\" module is: {}".format(module_name, binascii.hexlify(digest)))
+        print(("HMAC for \"{}\" module is: {}".format(module_name, binascii.hexlify(digest))))
         if debug:
             self.print_covered_info(sec_sym, gaps, print_reloc_addrs=print_reloc_addrs, sort_by=sort_by,
                                     reverse=reverse)
             self.dump_covered_bytes(addrs_for_hmac, "covered_dump_for_" + module_name + ".bin")
 
-        print("FIPS integrity procedure has been finished for {}".format(module_name))
+        print(("FIPS integrity procedure has been finished for {}".format(module_name)))

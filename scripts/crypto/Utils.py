@@ -5,6 +5,9 @@
 Module Utils contains Utils class with general purpose helper functions.
 """
 
+from builtins import zip
+from builtins import hex
+from builtins import object
 import struct
 import os
 from itertools import chain
@@ -18,7 +21,7 @@ __email__ = "v.stupakov@samsung.com"
 __status__ = "Production"
 
 
-class Utils:
+class Utils(object):
     """
     Utils class with general purpose helper functions.
     """
@@ -44,7 +47,7 @@ class Utils:
         :return: (s0, s1), (s2, s3), ..., (sN, sN+1)
         """
         a = iter(iterable)
-        return zip(a, a)
+        return list(zip(a, a))
 
     @staticmethod
     def paths_exists(path_list):
