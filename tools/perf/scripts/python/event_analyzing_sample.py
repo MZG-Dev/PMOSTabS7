@@ -1,4 +1,4 @@
-
+from __future__ import print_function
 
 # event_analyzing_sample.py: general event handler in python
 # SPDX-License-Identifier: GPL-2.0

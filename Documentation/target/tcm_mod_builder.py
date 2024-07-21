@@ -7,7 +7,7 @@
 # Author: nab@kernel.org
 #
 
-
+from __future__ import print_function
 from builtins import str
 from builtins import input
 import os, sys

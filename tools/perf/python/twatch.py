@@ -14,7 +14,7 @@
 #   General Public License for more details.
 
 
-
+from __future__ import print_function
 import perf
 
 def main(context_switch = 0, thread = -1):

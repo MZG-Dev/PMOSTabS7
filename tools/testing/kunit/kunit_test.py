@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-from builtins import str
-from builtins import object
 import unittest
 from unittest import mock
 
@@ -240,7 +238,7 @@ class KUnitMainTest(unittest.TestCase):
 		self.print_mock.assert_any_call(StrContains('aspeed_i2c'))
 
 
-class TestConfigProvider(object):
+class TestConfigProvider():
 	def __init__(self, kconfig):
 		self._kconfig = kconfig
 

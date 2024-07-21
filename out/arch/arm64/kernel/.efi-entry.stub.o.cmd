@@ -1,0 +1,1 @@
+cmd_arch/arm64/kernel/efi-entry.stub.o := /home/mzg/Downloads/SM-T970_EUR_RR_Opensource/Toolchains_by_Google/aarch64-4.9/bin/aarch64-linux-android-objcopy --prefix-symbols=__efistub_  arch/arm64/kernel/efi-entry.o arch/arm64/kernel/efi-entry.stub.o

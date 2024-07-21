@@ -1,4 +1,3 @@
-from builtins import object
 import re
 import pprint
 import os.path

@@ -4,7 +4,7 @@ tdc_helper.py - tdc helper functions
 
 Copyright (C) 2017 Lucas Bates <lucasb@mojatatu.com>
 """
-
+from __future__ import print_function
 
 
 from builtins import str

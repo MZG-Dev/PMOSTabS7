@@ -74,5 +74,5 @@ def print_error_totals():
 		    for id in id_keys:
 			    print("  syscall: %-16s\n" % syscall_name(id), end=' ')
 			    ret_keys = list(syscalls[comm][pid][id].keys())
-			    for ret, val in sorted(iter(list(syscalls[comm][pid][id].items())), key = lambda k_v: (k_v[1], k_v[0]),  reverse = True):
+			    for ret, val in sorted(iter(syscalls[comm][pid][id].items()), key = lambda k_v: (k_v[1], k_v[0]),  reverse = True):
 				    print("    err = %-20s  %10d\n" % (strerror(ret), val), end=' ')

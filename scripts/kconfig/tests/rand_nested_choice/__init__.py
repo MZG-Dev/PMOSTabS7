@@ -8,7 +8,6 @@ Related Linux commit: 3b9a19e08960e5cdad5253998637653e592a3c29
 """
 
 
-from builtins import range
 def test(conf):
     for i in range(20):
         assert conf.randconfig() == 0

@@ -25,7 +25,7 @@
 
 
 
-
+from __future__ import print_function
 from builtins import map
 from builtins import str
 from builtins import next

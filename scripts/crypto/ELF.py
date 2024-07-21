@@ -7,9 +7,6 @@ It can parse, and change ELF file. This version works only with vmlinux and does
 UND symbols
 """
 
-from builtins import str
-from builtins import hex
-from builtins import object
 import subprocess
 import re
 import os
@@ -27,7 +24,7 @@ __email__ = "v.stupakov@samsung.com"
 __status__ = "Production"
 
 
-class Symbol(object):
+class Symbol:
     def __init__(self, name=str(), sym_type=str(), bind=str(), visibility=str(), addr=int(), size=int(), ndx=str()):
         self.utils = Utils()
         self.name = str(name)
@@ -47,7 +44,7 @@ class Symbol(object):
         return self.addr <= other.addr
 
 
-class Section(object):
+class Section:
     def __init__(self, name=str(), sec_type=str(), addr=int(), offset=int(), size=int()):
         self.utils = Utils()
         self.name = str(name)
@@ -65,7 +62,7 @@ class Section(object):
         return self.addr <= other.addr
 
 
-class ELF(object):
+class ELF:
     """
     Utils for manipulating over ELF
     """

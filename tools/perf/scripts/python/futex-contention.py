@@ -1,4 +1,4 @@
-
+from __future__ import print_function
 
 # futex contention
 # (c) 2010, Arnaldo Carvalho de Melo <acme@redhat.com>

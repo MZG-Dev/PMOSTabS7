@@ -42,8 +42,6 @@
 # imports
 # ==============================================================================
 
-from builtins import range
-from builtins import object
 import sys
 
 from docutils import nodes

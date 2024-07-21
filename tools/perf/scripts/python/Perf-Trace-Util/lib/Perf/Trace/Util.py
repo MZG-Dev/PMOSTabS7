@@ -1,4 +1,4 @@
-
+from __future__ import print_function
 
 
 # Util.py - Python extension for perf script, miscellaneous utility code

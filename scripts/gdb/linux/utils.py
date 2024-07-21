@@ -11,12 +11,10 @@
 # This work is licensed under the terms of the GNU GPL version 2.
 #
 
-from builtins import str
-from builtins import object
 import gdb
 
 
-class CachedType(object):
+class CachedType:
     def __init__(self, name):
         self._type = None
         self._name = name

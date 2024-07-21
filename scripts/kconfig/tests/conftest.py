@@ -8,7 +8,7 @@ Kconfig unit testing framework.
 
 This provides fixture functions commonly used from test files.
 """
-
+from __future__ import print_function
 
 
 from builtins import str

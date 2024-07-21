@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # Code for validating instrumention (i.e. for detecting bugs in instrument.py).
-from builtins import map
-from builtins import range
 import re
 import multiprocessing
 import textwrap

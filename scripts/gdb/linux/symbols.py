@@ -11,8 +11,6 @@
 # This work is licensed under the terms of the GNU GPL version 2.
 #
 
-from builtins import str
-from builtins import range
 import gdb
 import os
 import re

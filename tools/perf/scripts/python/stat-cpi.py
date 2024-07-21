@@ -3,7 +3,7 @@
 
 
 
-
+from __future__ import print_function
 from past.utils import old_div
 data    = {}
 times   = []

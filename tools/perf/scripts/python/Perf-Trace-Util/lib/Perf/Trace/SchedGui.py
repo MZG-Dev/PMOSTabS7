@@ -1,4 +1,4 @@
-
+from __future__ import division
 # SchedGui.py - Python extension for perf script, basic GUI code for
 #		traces drawing and overview.
 #

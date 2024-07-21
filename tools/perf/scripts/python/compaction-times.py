@@ -1,4 +1,4 @@
-
+from __future__ import division
 # report time spent in compaction
 # Licensed under the terms of the GNU GPL License version 2
 

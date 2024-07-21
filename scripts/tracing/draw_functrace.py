@@ -20,7 +20,7 @@ Usage:
 	$ scripts/draw_functrace.py < raw_trace_func > draw_functrace
 	Then you have your drawn trace in draw_functrace
 """
-
+from __future__ import print_function
 
 
 

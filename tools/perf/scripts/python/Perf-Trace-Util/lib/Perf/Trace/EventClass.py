@@ -1,4 +1,4 @@
-
+from __future__ import print_function
 
 # EventClass.py
 # SPDX-License-Identifier: GPL-2.0

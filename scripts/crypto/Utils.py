@@ -5,9 +5,6 @@
 Module Utils contains Utils class with general purpose helper functions.
 """
 
-from builtins import zip
-from builtins import hex
-from builtins import object
 import struct
 import os
 from itertools import chain
@@ -21,7 +18,7 @@ __email__ = "v.stupakov@samsung.com"
 __status__ = "Production"
 
 
-class Utils(object):
+class Utils:
     """
     Utils class with general purpose helper functions.
     """

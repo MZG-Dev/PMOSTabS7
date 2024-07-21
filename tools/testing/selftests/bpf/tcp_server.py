@@ -4,7 +4,7 @@
 #
 
 
-
+from __future__ import print_function
 from builtins import str
 import sys, os, os.path, getopt
 import socket, time

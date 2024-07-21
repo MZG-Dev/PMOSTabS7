@@ -5,7 +5,7 @@
 This script is needed for buildtime integrity routine.
 It calculates and embeds HMAC and other needed stuff for in terms of FIPS 140-2
 """
-
+from __future__ import print_function
 
 
 import os

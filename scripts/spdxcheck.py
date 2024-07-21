@@ -3,7 +3,7 @@
 # Copyright Thomas Gleixner <tglx@linutronix.de>
 
 
-
+from __future__ import print_function
 from builtins import object
 from argparse import ArgumentParser
 from ply import lex, yacc

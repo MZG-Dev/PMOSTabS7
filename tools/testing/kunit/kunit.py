@@ -4,7 +4,7 @@
 # A thin wrapper on top of the KUnit Kernel
 
 
-
+from __future__ import print_function
 from builtins import object
 import argparse
 import sys

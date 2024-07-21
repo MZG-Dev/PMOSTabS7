@@ -13,7 +13,7 @@ correctly, and additional ones that are recommended.
 This script can help compare these base configs with the ".config"
 output of the compiler to determine if the proper configs are defined.
 """
-
+from __future__ import print_function
 
 
 from builtins import object

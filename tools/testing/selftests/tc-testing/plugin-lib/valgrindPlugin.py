@@ -2,7 +2,7 @@
 run the command under test, under valgrind and collect memory leak info
 as a separate test.
 '''
-
+from __future__ import print_function
 
 
 

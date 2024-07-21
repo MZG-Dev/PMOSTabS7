@@ -1,4 +1,4 @@
-
+from __future__ import print_function
 
 # stackcollapse.py - format perf samples with one line per distinct call stack
 # SPDX-License-Identifier: GPL-2.0

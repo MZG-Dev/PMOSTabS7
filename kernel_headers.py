@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """Generates gen_headers_<arch>.bp or generates/checks kernel headers."""
-
+from __future__ import print_function
 
 
 

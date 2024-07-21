@@ -11,7 +11,7 @@ mydir$ tree
     ├── Makefile
     └── my_driver_test.c
 '''
-
+from __future__ import print_function
 
 
 from builtins import object

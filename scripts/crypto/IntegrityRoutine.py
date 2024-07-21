@@ -5,7 +5,7 @@
 Module IntegrityRoutine Contains IntegrityRoutine class helps with FIPS 140-2 build time integrity routine.
 This module is needed to calculate HMAC and embed other needed stuff.
 """
-
+from __future__ import print_function
 
 
 from builtins import hex

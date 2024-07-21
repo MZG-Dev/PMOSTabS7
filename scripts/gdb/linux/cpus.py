@@ -1,4 +1,4 @@
-
+from __future__ import division
 #
 # gdb helper commands and functions for Linux kernel debugging
 #

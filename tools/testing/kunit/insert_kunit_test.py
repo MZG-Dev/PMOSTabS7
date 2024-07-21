@@ -2,7 +2,7 @@
 '''
 Unit Test for insert_kunit.py
 '''
-
+from __future__ import print_function
 
 
 __author__ = 'Ji-Hun Kim'

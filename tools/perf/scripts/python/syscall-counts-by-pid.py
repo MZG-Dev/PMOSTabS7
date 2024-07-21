@@ -69,6 +69,6 @@ def print_syscall_totals():
 	    for pid in pid_keys:
 		    print("\n%s [%d]\n" % (comm, pid), end=' ')
 		    id_keys = list(syscalls[comm][pid].keys())
-		    for id, val in sorted(iter(list(syscalls[comm][pid].items())), \
+		    for id, val in sorted(iter(syscalls[comm][pid].items()), \
 				  key = lambda k_v: (k_v[1], k_v[0]),  reverse = True):
 			    print("  %-38s  %10d\n" % (syscall_name(id), val), end=' ')

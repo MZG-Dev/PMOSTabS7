@@ -11,7 +11,6 @@
 # This work is licensed under the terms of the GNU GPL version 2.
 #
 
-from builtins import str
 import gdb
 
 from linux import cpus, utils, lists

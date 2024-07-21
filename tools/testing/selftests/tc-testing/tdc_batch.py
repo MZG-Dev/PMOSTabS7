@@ -6,7 +6,6 @@ tdc_batch.py - a script to generate TC batch file
 Copyright (C) 2017 Chris Mi <chrism@mellanox.com>
 """
 
-from builtins import range
 import argparse
 
 parser = argparse.ArgumentParser(description='TC batch file generator')

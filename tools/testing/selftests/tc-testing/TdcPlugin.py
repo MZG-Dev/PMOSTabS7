@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-
+from __future__ import print_function
 from builtins import object
 class TdcPlugin(object):
     def __init__(self):

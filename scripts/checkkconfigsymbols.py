@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """Find Kconfig symbols that are referenced but not defined."""
-
+from __future__ import print_function
 
 
 # (c) 2014-2017 Valentin Rothberg <valentinrothberg@gmail.com>

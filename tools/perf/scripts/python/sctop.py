@@ -70,7 +70,7 @@ def print_syscall_totals(interval):
 		print("%-40s  %10s\n" % ("----------------------------------------", \
 						 "----------"), end=' ')
 
-		for id, val in sorted(iter(list(syscalls.items())), key = lambda k_v: (k_v[1], k_v[0]), \
+		for id, val in sorted(iter(syscalls.items()), key = lambda k_v: (k_v[1], k_v[0]), \
 					      reverse = True):
 			try:
 				print("%-40s  %10d\n" % (syscall_name(id), val), end=' ')
